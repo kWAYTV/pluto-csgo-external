@@ -35,21 +35,37 @@ logo = """
 ██║░░░░░███████╗╚██████╔╝░░░██║░░░╚█████╔╝  ╚█████╔╝██████╔╝╚██████╔╝╚█████╔╝
 ╚═╝░░░░░╚══════╝░╚═════╝░░░░╚═╝░░░░╚════╝░  ░╚════╝░╚═════╝░░╚═════╝░░╚════╝░"""
 
-defEnv = """TEAM_GLOW_R=156
+defEnv = """# Team Glow Red
+TEAM_GLOW_R=156
+# Team Glow Green
 TEAM_GLOW_G=133
+# Team Glow Blue
 TEAM_GLOW_B=171
+# Team Glow Alpha
 TEAM_GLOW_A=0.9
+# Enemy Glow Red
 ENEMY_GLOW_R=255
+# Enemy Glow Green
 ENEMY_GLOW_G=0
+# Enemy Glow Blue
 ENEMY_GLOW_B=179
+# Enemy Glow Alpha
 ENEMY_GLOW_A=0.9
+# Team Chams Red
 TEAM_CHAMS_R=0.0
+# Team Chams Green
 TEAM_CHAMS_G=0.0
+# Team Chams Blue
 TEAM_CHAMS_B=0.0
+# Team Chams Alpha
 TEAM_CHAMS_A=0.0
+# Enemy Chams Red
 ENEMY_CHAMS_R=0.0
+# Enemy Chams Green
 ENEMY_CHAMS_G=0.0
+# Enemy Chams Blue
 ENEMY_CHAMS_B=0.0
+# Enemy Chams Alpha
 ENEMY_CHAMS_A=0.0"""
 
 # .env File Check
