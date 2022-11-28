@@ -1,9 +1,30 @@
+# Auto Import Installer
+import os
+clear = lambda: os.system("cls" if os.name in ("nt", "dos") else "clear") # Don't touch this
+try:
+    import pymem, pymem.process, keyboard, ctypes, os, time, dotenv, subprocess, sys
+    from struct import pack
+    from time import sleep
+    from colorama import Fore, Back, Style
+    from win32gui import GetWindowText, GetForegroundWindow
+    from dotenv import load_dotenv
+    clear()
+    print(f"\n{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}] {Fore.RESET}Imports successful!")
+    time.sleep(1)
+except:
+    clear()
+    print("\nImports failed! Trying to install...")
+    z = "python -m pip install "; os.system('%scolorama' % (z)); os.system('%skeyboard' % (z)); os.system('%spymem' % (z)); os.system('%spython-dotenv' % (z)); os.system('%swin32gui' % (z))
+    print(f"\n{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}] {Fore.RESET}Imports successful!")
+    time.sleep(1)
+
 # Imports
-import pymem, pymem.process, keyboard, ctypes, os, time
+import pymem, pymem.process, keyboard, ctypes, os, time, dotenv, subprocess
 from struct import pack
 from time import sleep
 from colorama import Fore, Back, Style
 from win32gui import GetWindowText, GetForegroundWindow
+from dotenv import load_dotenv
 
 # Logo
 logo = """
@@ -14,8 +35,46 @@ logo = """
 ██║░░░░░███████╗╚██████╔╝░░░██║░░░╚█████╔╝  ╚█████╔╝██████╔╝╚██████╔╝╚█████╔╝
 ╚═╝░░░░░╚══════╝░╚═════╝░░░░╚═╝░░░░╚════╝░  ░╚════╝░╚═════╝░░╚═════╝░░╚════╝░"""
 
-# Clear function
-clear = lambda: os.system("cls" if os.name in ("nt", "dos") else "clear") # Don't touch this
+
+clear()
+
+defEnv = """TEAM_GLOW_R=0.9
+TEAM_GLOW_G=0
+TEAM_GLOW_B=0
+TEAM_GLOW_A=0.9
+TEAM_GLOW_ENABLE=1
+ENEMY_GLOW_R=0
+ENEMY_GLOW_G=0.9
+ENEMY_GLOW_B=0.9
+ENEMY_GLOW_A=0.9
+ENEMY_GLOW_ENABLE=1"""
+
+# .env File Check
+if not os.path.exists(".env"):
+    clear()
+    os.system("title Pluto External - 1.0 - discord.gg/kws")
+    print(Fore.RED + logo + Style.RESET_ALL)
+    print("-----------------------------------------------------------------------------")
+    print(f"{Fore.RED}ERROR: {Fore.WHITE}No .env file found, creating one now...")
+    with open(".env", "w") as f:
+        f.write(defEnv)
+        f.close()
+    print(f"{Fore.RED}ERROR: {Fore.WHITE}Restarting the program.")
+    time.sleep(1)
+    subprocess.call([sys.executable, os.path.realpath(__file__)] + sys.argv[1:])
+
+# Load .env file
+load_dotenv()
+team_glow_r = float(os.getenv("TEAM_GLOW_R"))
+team_glow_g = float(os.getenv("TEAM_GLOW_G"))
+team_glow_b = float(os.getenv("TEAM_GLOW_B"))
+team_glow_a = float(os.getenv("TEAM_GLOW_A"))
+team_glow_enable = int(os.getenv("TEAM_GLOW_ENABLE"))
+enemy_glow_r = float(os.getenv("ENEMY_GLOW_R"))
+enemy_glow_g = float(os.getenv("ENEMY_GLOW_G"))
+enemy_glow_b = float(os.getenv("ENEMY_GLOW_B"))
+enemy_glow_a = float(os.getenv("ENEMY_GLOW_A"))
+enemy_glow_enable = int(os.getenv("ENEMY_GLOW_ENABLE"))
 
 # Switches
 glowSwitch = False
@@ -53,17 +112,17 @@ def glow():
             playerTeam = pm.read_int(player + m_iTeamNum)
             glowIndex = pm.read_int(player + m_iGlowIndex)
             if (playerTeam != localTeam):
-                pm.write_float(glowManager + (glowIndex * 0x38) + 0x8, float(0.9)) # Red
-                pm.write_float(glowManager + (glowIndex * 0x38) + 0xC, float(0)) # Green
-                pm.write_float(glowManager + (glowIndex * 0x38) + 0x10, float(0)) # Blue
-                pm.write_float(glowManager + (glowIndex * 0x38) + 0x14, float(0.9)) # Alpha
-                pm.write_int(glowManager + (glowIndex * 0x38) + 0x28, 1) # Enable enemy glow
+                pm.write_float(glowManager + (glowIndex * 0x38) + 0x8, team_glow_r) # Red
+                pm.write_float(glowManager + (glowIndex * 0x38) + 0xC, team_glow_g) # Green
+                pm.write_float(glowManager + (glowIndex * 0x38) + 0x10, team_glow_b) # Blue
+                pm.write_float(glowManager + (glowIndex * 0x38) + 0x14, team_glow_a) # Alpha
+                pm.write_int(glowManager + (glowIndex * 0x38) + 0x28, team_glow_enable) # Enabled
             elif (playerTeam == localTeam):
-                pm.write_float(glowManager + (glowIndex * 0x38) + 0x8, float(0)) # Red
-                pm.write_float(glowManager + (glowIndex * 0x38) + 0xC, float(0.9)) # Green
-                pm.write_float(glowManager + (glowIndex * 0x38) + 0x10, float(0.9)) # Blue
-                pm.write_float(glowManager + (glowIndex * 0x38) + 0x14, float(0.9)) # Alpha
-                pm.write_int(glowManager + (glowIndex * 0x38) + 0x28, 1) # Enable team glow
+                pm.write_float(glowManager + (glowIndex * 0x38) + 0x8, enemy_glow_r) # Red
+                pm.write_float(glowManager + (glowIndex * 0x38) + 0xC, enemy_glow_g) # Green
+                pm.write_float(glowManager + (glowIndex * 0x38) + 0x10, enemy_glow_b) # Blue
+                pm.write_float(glowManager + (glowIndex * 0x38) + 0x14, enemy_glow_a)
+                pm.write_int(glowManager + (glowIndex * 0x38) + 0x28, enemy_glow_enable) # Enabled
 
 # Brightness chams function
 def brightness_chams():
@@ -132,7 +191,7 @@ def switches():
         if keyboard.is_pressed("f2"):
             if brightnessChamsSwitch == True:
                 brightnessChamsSwitch = False
-                print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Brightness chams disabled.")
+                print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Brightness chams {Fore.RED}can't be{Fore.RESET} disabled.")
                 time.sleep(0.5)
             elif brightnessChamsSwitch == False:
                 brightnessChamsSwitch = True
@@ -190,10 +249,10 @@ def main():
 if __name__ == "__main__":
     try:
         main()
-    except Exception as e:
-        print(f"{Fore.RED}[{Fore.RESET}!{Fore.RED}]{Fore.RESET} Error: {str(e)}")
-        time.sleep(5)
-        exit()
+    #except Exception as e:
+        #print(f"{Fore.RED}[{Fore.RESET}!{Fore.RED}]{Fore.RESET} Error: {str(e)}")
+        #time.sleep(5)
+        #exit()
     except KeyboardInterrupt:
         print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Exiting...")
         time.sleep(1)
