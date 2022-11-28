@@ -337,10 +337,10 @@ def main():
 if __name__ == "__main__":
     try:
         main()
-    #except Exception as e:
-        #print(f"{Fore.RED}[{Fore.RESET}!{Fore.RED}]{Fore.RESET} Error: {str(e)}")
-        #time.sleep(5)
-        #exit()
+    except Exception as e:
+        print(f"{Fore.RED}[{Fore.RESET}!{Fore.RED}]{Fore.RESET} Error: {str(e)}")
+        time.sleep(5)
+        exit()
     except KeyboardInterrupt:
         print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Exiting...")
         time.sleep(1)
