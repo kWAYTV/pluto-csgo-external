@@ -1,5 +1,5 @@
 # Pluto CS:GO External
- CS:GO External Cheat written on Python
+ CS:GO External Cheat written in Python
 # Set Up
  Just run the file with csgo open it has auto everything
 # Disclaimer
