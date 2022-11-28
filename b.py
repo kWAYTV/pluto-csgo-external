@@ -35,19 +35,22 @@ logo = """
 ██║░░░░░███████╗╚██████╔╝░░░██║░░░╚█████╔╝  ╚█████╔╝██████╔╝╚██████╔╝╚█████╔╝
 ╚═╝░░░░░╚══════╝░╚═════╝░░░░╚═╝░░░░╚════╝░  ░╚════╝░╚═════╝░░╚═════╝░░╚════╝░"""
 
-
-clear()
-
-defEnv = """TEAM_GLOW_R=0.9
-TEAM_GLOW_G=0
-TEAM_GLOW_B=0
+defEnv = """TEAM_GLOW_R=156
+TEAM_GLOW_G=133
+TEAM_GLOW_B=171
 TEAM_GLOW_A=0.9
-TEAM_GLOW_ENABLE=1
-ENEMY_GLOW_R=0
-ENEMY_GLOW_G=0.9
-ENEMY_GLOW_B=0.9
+ENEMY_GLOW_R=255
+ENEMY_GLOW_G=0
+ENEMY_GLOW_B=179
 ENEMY_GLOW_A=0.9
-ENEMY_GLOW_ENABLE=1"""
+TEAM_CHAMS_R=0.0
+TEAM_CHAMS_G=0.0
+TEAM_CHAMS_B=0.0
+TEAM_CHAMS_A=0.0
+ENEMY_CHAMS_R=0.0
+ENEMY_CHAMS_G=0.0
+ENEMY_CHAMS_B=0.0
+ENEMY_CHAMS_A=0.0"""
 
 # .env File Check
 if not os.path.exists(".env"):
@@ -69,32 +72,40 @@ team_glow_r = float(os.getenv("TEAM_GLOW_R"))
 team_glow_g = float(os.getenv("TEAM_GLOW_G"))
 team_glow_b = float(os.getenv("TEAM_GLOW_B"))
 team_glow_a = float(os.getenv("TEAM_GLOW_A"))
-team_glow_enable = int(os.getenv("TEAM_GLOW_ENABLE"))
 enemy_glow_r = float(os.getenv("ENEMY_GLOW_R"))
 enemy_glow_g = float(os.getenv("ENEMY_GLOW_G"))
 enemy_glow_b = float(os.getenv("ENEMY_GLOW_B"))
 enemy_glow_a = float(os.getenv("ENEMY_GLOW_A"))
-enemy_glow_enable = int(os.getenv("ENEMY_GLOW_ENABLE"))
+team_chams_r = float(os.getenv("TEAM_CHAMS_R"))
+team_chams_g = float(os.getenv("TEAM_CHAMS_G"))
+team_chams_b = float(os.getenv("TEAM_CHAMS_B"))
+enemy_chams_r = float(os.getenv("ENEMY_CHAMS_R"))
+enemy_chams_g = float(os.getenv("ENEMY_CHAMS_G"))
+enemy_chams_b = float(os.getenv("ENEMY_CHAMS_B"))
 
 # Switches
 glowSwitch = False
+chamsSwitch = False
 brightnessChamsSwitch = False
 triggerbotSwitch = False
 bhopSwitch = False
+radarSwitch = False
 
 # Offsets
 m_iTeamNum = (0xF4)
 m_iGlowIndex = (0x10488)
 m_fFlags = (0x104)
 m_iCrosshairId = (0x11838)
+m_flFlashMaxAlpha = (0x1046C)
+m_vecOrigin = (0x138)
+m_clrRender = (0x70)
+m_bSpotted = (0x93D)
 dwLocalPlayer = (0xDE7964)
 dwEntityList = (0x4DFCE74)
 dwForceAttack = (0x322AC7C)
 dwForceJump = (0x52B8BFC)
 dwGlowObjectManager = (0x5357948)
 model_ambient_min = (0x5A118C)
-m_flFlashMaxAlpha = (0x1046C)
-m_vecOrigin = (0x138)
 
 # Pymem
 pm = pymem.Pymem("csgo.exe")
@@ -116,13 +127,37 @@ def glow():
                 pm.write_float(glowManager + (glowIndex * 0x38) + 0xC, team_glow_g) # Green
                 pm.write_float(glowManager + (glowIndex * 0x38) + 0x10, team_glow_b) # Blue
                 pm.write_float(glowManager + (glowIndex * 0x38) + 0x14, team_glow_a) # Alpha
-                pm.write_int(glowManager + (glowIndex * 0x38) + 0x28, team_glow_enable) # Enabled
+                pm.write_int(glowManager + (glowIndex * 0x38) + 0x28, 1) # Enable
             elif (playerTeam == localTeam):
                 pm.write_float(glowManager + (glowIndex * 0x38) + 0x8, enemy_glow_r) # Red
                 pm.write_float(glowManager + (glowIndex * 0x38) + 0xC, enemy_glow_g) # Green
                 pm.write_float(glowManager + (glowIndex * 0x38) + 0x10, enemy_glow_b) # Blue
                 pm.write_float(glowManager + (glowIndex * 0x38) + 0x14, enemy_glow_a)
-                pm.write_int(glowManager + (glowIndex * 0x38) + 0x28, enemy_glow_enable) # Enabled
+                pm.write_int(glowManager + (glowIndex * 0x38) + 0x28, 1) # Enable
+
+# Chams function
+def chams():
+    try:
+        time.sleep(0.001)
+        localPlayer = pm.read_int(client + dwLocalPlayer)
+        localTeam = pm.read_int(localPlayer + m_iTeamNum)
+        for i in range(0, 32):
+            player = pm.read_int(client + dwEntityList + i * 0x10)
+            if player and not (player < 0):
+                playerTeam = pm.read_int(player + m_iTeamNum)
+                glowIndex = pm.read_int(player + m_iGlowIndex)
+                if (playerTeam != localTeam):
+                    pm.write_float(player + m_clrRender, enemy_chams_r) # Red
+                    pm.write_float(player + m_clrRender + 0x1, enemy_chams_g) # Green
+                    pm.write_float(player + m_clrRender + 0x2, enemy_chams_b) # Blue
+                elif (playerTeam == localTeam):
+                    pm.write_float(player + m_clrRender, team_chams_r) # Red
+                    pm.write_float(player + m_clrRender + 0x1, team_chams_g) # Green
+                    pm.write_float(player + m_clrRender + 0x2, team_chams_b) # Blue
+            else:
+                pass
+    except Exception as e:
+        print(f"{Fore.RED}[{Fore.RESET}!{Fore.RED}]{Fore.RESET} Error (chams): {str(e)}")
 
 # Brightness chams function
 def brightness_chams():
@@ -163,18 +198,31 @@ def bhop():
 
     time.sleep(0.002)
 
+# Radar function
+def radar():
+    for i in range(1, 32):
+        entity = pm.read_int(client + dwEntityList + i * 0x10)
+        if entity:
+            spotted = pm.read_int(entity + m_bSpotted)
+            if spotted == 0:
+                pm.write_int(entity + m_bSpotted, 1)
+
 # Switches function
 def switches():
-    global glowSwitch, brightnessChamsSwitch, triggerbotSwitch, bhopSwitch
+    global glowSwitch, chamsSwitch, brightnessChamsSwitch, triggerbotSwitch, bhopSwitch, radarSwitch
     while True:
         if glowSwitch == True:
             glow()
+        if chamsSwitch == True:
+            chams()
         if brightnessChamsSwitch == True:
             brightness_chams()
         if triggerbotSwitch == True:
             triggerbot()
         if bhopSwitch == True:
             bhop()
+        if radarSwitch == True:
+            radar()
 
         # Glow switch
         if keyboard.is_pressed("f1"):
@@ -186,9 +234,20 @@ def switches():
                 glowSwitch = True
                 print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Glow enabled.")
                 time.sleep(0.5)
+
+        # Chams switch
+        if keyboard.is_pressed("f2"):
+            if chamsSwitch == True:
+                chamsSwitch = False
+                print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Chams {Fore.RED}can't be{Fore.RESET} disabled.")
+                time.sleep(0.5)
+            elif chamsSwitch == False:
+                chamsSwitch = True
+                print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Chams enabled.")
+                time.sleep(0.5)
         
         # Brightness chams switch
-        if keyboard.is_pressed("f2"):
+        if keyboard.is_pressed("f3"):
             if brightnessChamsSwitch == True:
                 brightnessChamsSwitch = False
                 print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Brightness chams {Fore.RED}can't be{Fore.RESET} disabled.")
@@ -199,7 +258,7 @@ def switches():
                 time.sleep(0.5)
 
         # Triggerbot switch
-        if keyboard.is_pressed("f3"):
+        if keyboard.is_pressed("f4"):
             if triggerbotSwitch == True:
                 triggerbotSwitch = False
                 print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Triggerbot disabled.")
@@ -210,7 +269,7 @@ def switches():
                 time.sleep(1)
         
         # Bhop switch
-        if keyboard.is_pressed("f4"):
+        if keyboard.is_pressed("f5"):
             if bhopSwitch == True:
                 bhopSwitch = False
                 print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Bunnyhop disabled.")
@@ -219,9 +278,20 @@ def switches():
                 bhopSwitch = True
                 print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Bunnyhop enabled.")
                 time.sleep(0.5)
-        
+
+        # Radar switch
+        if keyboard.is_pressed("f6"):
+            if radarSwitch == True:
+                radarSwitch = False
+                print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Radar {Fore.RED}can't be{Fore.RESET} disabled.")
+                time.sleep(0.5)
+            elif radarSwitch == False:
+                radarSwitch = True
+                print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Radar enabled.")
+                time.sleep(0.5)
+
         # Exit switch
-        if keyboard.is_pressed("f7"):
+        if keyboard.is_pressed("end"):
             print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Exiting...")
             time.sleep(1)
             exit()
@@ -237,10 +307,12 @@ def main():
     print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Found engine.dll: {Fore.CYAN}{hex(engine)}{Fore.RESET}")
     print("-----------------------------------------------------------------------------")
     print(f"{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}]{Fore.RESET} Press {Fore.MAGENTA}F1{Fore.RESET} to toggle glow.")
-    print(f"{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}]{Fore.RESET} Press {Fore.MAGENTA}F2{Fore.RESET} to toggle brightness chams. {Fore.RED}(CAN'T TURN OFF){Fore.RESET}")
-    print(f"{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}]{Fore.RESET} Press {Fore.MAGENTA}F3{Fore.RESET} to toggle triggerbot.")
-    print(f"{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}]{Fore.RESET} Press {Fore.MAGENTA}F4{Fore.RESET} to toggle bunnyhop.")
-    print(f"{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}]{Fore.RESET} Press {Fore.MAGENTA}F7{Fore.RESET} to exit.")
+    print(f"{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}]{Fore.RESET} Press {Fore.MAGENTA}F2{Fore.RESET} to toggle chams. {Fore.RED}(CAN'T TURN OFF){Fore.RESET}")
+    print(f"{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}]{Fore.RESET} Press {Fore.MAGENTA}F3{Fore.RESET} to toggle brightness chams. {Fore.RED}(CAN'T TURN OFF){Fore.RESET}")
+    print(f"{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}]{Fore.RESET} Press {Fore.MAGENTA}F4{Fore.RESET} to toggle triggerbot.")
+    print(f"{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}]{Fore.RESET} Press {Fore.MAGENTA}F5{Fore.RESET} to toggle bunnyhop.")
+    print(f"{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}]{Fore.RESET} Press {Fore.MAGENTA}F6{Fore.RESET} to toggle radar. {Fore.RED}(CAN'T TURN OFF){Fore.RESET}")
+    print(f"{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}]{Fore.RESET} Press {Fore.MAGENTA}END{Fore.RESET} to exit.")
     print("-----------------------------------------------------------------------------")
     print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Cheat loaded.")
     switches()
