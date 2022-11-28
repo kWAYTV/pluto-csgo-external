@@ -57,16 +57,12 @@ TEAM_CHAMS_R=0.0
 TEAM_CHAMS_G=0.0
 # Team Chams Blue
 TEAM_CHAMS_B=0.0
-# Team Chams Alpha
-TEAM_CHAMS_A=0.0
 # Enemy Chams Red
 ENEMY_CHAMS_R=0.0
 # Enemy Chams Green
 ENEMY_CHAMS_G=0.0
 # Enemy Chams Blue
-ENEMY_CHAMS_B=0.0
-# Enemy Chams Alpha
-ENEMY_CHAMS_A=0.0"""
+ENEMY_CHAMS_B=0.0"""
 
 # .env File Check
 if not os.path.exists(".env"):
