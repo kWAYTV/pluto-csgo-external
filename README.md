@@ -2,6 +2,16 @@
  CS:GO External Cheat written in Python
 # Set Up
  Just run the file with csgo open it has auto everything
+# Features
+ - Glow
+ - Chams
+ - Brigtness chams
+ - Triggerbot
+ - Bhop
+# To-Do
+ - FOV
+ - Third Person
+ - Aimbot
 # Disclaimer
  This is obviously detected, it was to learn, stfu.
 # Links
