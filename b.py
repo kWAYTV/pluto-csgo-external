@@ -35,6 +35,7 @@ dwForceJump = (0x52B8BFC)
 dwGlowObjectManager = (0x5357948)
 model_ambient_min = (0x5A118C)
 m_flFlashMaxAlpha = (0x1046C)
+m_vecOrigin = (0x138)
 
 # Pymem
 pm = pymem.Pymem("csgo.exe")
@@ -121,29 +122,29 @@ def switches():
             if glowSwitch == True:
                 glowSwitch = False
                 print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Glow disabled.")
-                time.sleep(1.25)
+                time.sleep(0.5)
             elif glowSwitch == False:
                 glowSwitch = True
                 print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Glow enabled.")
-                time.sleep(1.25)
+                time.sleep(0.5)
         
         # Brightness chams switch
         if keyboard.is_pressed("f2"):
             if brightnessChamsSwitch == True:
                 brightnessChamsSwitch = False
                 print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Brightness chams disabled.")
-                time.sleep(1.25)
+                time.sleep(0.5)
             elif brightnessChamsSwitch == False:
                 brightnessChamsSwitch = True
                 print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Brightness chams enabled.")
-                time.sleep(1.25)
+                time.sleep(0.5)
 
         # Triggerbot switch
         if keyboard.is_pressed("f3"):
             if triggerbotSwitch == True:
                 triggerbotSwitch = False
                 print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Triggerbot disabled.")
-                time.sleep(1.25)
+                time.sleep(0.5)
             elif triggerbotSwitch == False:
                 triggerbotSwitch = True
                 print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Triggerbot enabled.")
@@ -154,11 +155,11 @@ def switches():
             if bhopSwitch == True:
                 bhopSwitch = False
                 print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Bunnyhop disabled.")
-                time.sleep(1.25)
+                time.sleep(0.5)
             elif bhopSwitch == False:
                 bhopSwitch = True
                 print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Bunnyhop enabled.")
-                time.sleep(1.25)
+                time.sleep(0.5)
         
         # Exit switch
         if keyboard.is_pressed("f7"):
@@ -171,8 +172,18 @@ def main():
     clear()
     os.system("title Pluto External - 1.0 - discord.gg/kws")
     print(Fore.RED + logo + Style.RESET_ALL)
-    print("--------------")
-    print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Found CS:GO process: {Fore.GREEN}{pm.process_id}{Fore.RESET}")
+    print("-----------------------------------------------------------------------------")
+    print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Found CS:GO process: {Fore.CYAN}{pm.process_id}{Fore.RESET}")
+    print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Found client.dll: {Fore.CYAN}{hex(client)}{Fore.RESET}")
+    print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Found engine.dll: {Fore.CYAN}{hex(engine)}{Fore.RESET}")
+    print("-----------------------------------------------------------------------------")
+    print(f"{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}]{Fore.RESET} Press {Fore.MAGENTA}F1{Fore.RESET} to toggle glow.")
+    print(f"{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}]{Fore.RESET} Press {Fore.MAGENTA}F2{Fore.RESET} to toggle brightness chams. {Fore.RED}(CAN'T TURN OFF){Fore.RESET}")
+    print(f"{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}]{Fore.RESET} Press {Fore.MAGENTA}F3{Fore.RESET} to toggle triggerbot.")
+    print(f"{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}]{Fore.RESET} Press {Fore.MAGENTA}F4{Fore.RESET} to toggle bunnyhop.")
+    print(f"{Fore.MAGENTA}[{Fore.RESET}!{Fore.MAGENTA}]{Fore.RESET} Press {Fore.MAGENTA}F7{Fore.RESET} to exit.")
+    print("-----------------------------------------------------------------------------")
+    print(f"{Fore.GREEN}[{Fore.RESET}+{Fore.GREEN}]{Fore.RESET} Cheat loaded.")
     switches()
 
 # Main
